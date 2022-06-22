@@ -1,21 +1,16 @@
 import shortid from 'shortid';
-import { ADD, DELETE, CHANGE_FILTER } from './todos-types';
+import { createAction } from '@reduxjs/toolkit';
 
-export const addTodo = text => ({
-  type: ADD,
+export const addTodo = createAction('todos/Add', text => ({
   payload: {
     id: shortid.generate(),
     text,
     completed: false,
   },
-});
+}));
 
-export const deleteTodo = todoId => ({
-  type: DELETE,
-  payload: todoId,
-});
+export const deleteTodo = createAction('todos/delete');
 
-export const changeFilter = value => ({
-  type: CHANGE_FILTER,
-  payload: value,
-});
+export const changeFilter = createAction('todos/changeFilter');
+
+export const toggleCompleted = createAction('todos/toggleCompleted');

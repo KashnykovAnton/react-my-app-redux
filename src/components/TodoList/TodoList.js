@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Todo from '../Todo';
-import { deleteTodo } from 'redux/todos/todos-actions';
+import { deleteTodo, toggleCompleted } from 'redux/todos/todos-actions';
 import './TodoList.scss';
 
 const TodoList = ({ todos, onDeleteTodo, onToggleCompleted }) => (
@@ -43,7 +43,7 @@ const mapStateToProps = ({ todos: { items, filter } }) => ({
 
 const mapDispatchToProps = dispatch => ({
   onDeleteTodo: id => dispatch(deleteTodo(id)),
-  onToggleCompleted: () => null,
+  onToggleCompleted: id => dispatch(toggleCompleted(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
