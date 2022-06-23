@@ -3,11 +3,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import { incrementCounter, decrementCounter } from './counter-actions';
 
 const valueReducer = createReducer(0, {
-  [incrementCounter]: (state, action) => {
-    console.log(state);
-    console.log(action);
-    return state + action.payload;
-  },
+  [incrementCounter]: (state, action) => state + action.payload,
   [decrementCounter]: (state, action) => state - action.payload,
 });
 
