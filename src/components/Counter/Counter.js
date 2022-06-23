@@ -1,98 +1,65 @@
-// import React, { Component } from 'react';
 import React from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Controls from './Controls';
 import Value from './Value';
-import { increment, decrement } from 'redux/counter/counter-actions';
+import {
+  incrementCounter,
+  decrementCounter,
+} from 'redux/counter/counter-actions';
+import { getValue, getStep } from 'redux/counter/counter-selectors';
 import './Counter.css';
 
-function Counter({ value, step, onIncrement, onDecrement }) {
+function Counter() {
+  // const value = useSelector(state => state.counter.value);
+  // const step = useSelector(state => state.counter.step);
+
+  // // pattern not recommended
+  // // const {value, step} = useSelector(state => state.counter)
+
+  // with selectors
+  const value = useSelector(getValue);
+  const step = useSelector(getStep);
+
+  const dispatch = useDispatch();
+
+  const increment = () => dispatch(incrementCounter(step));
+  const decrement = () => dispatch(decrementCounter(step));
+
   return (
     <div className="Counter">
       <Value value={value} />
-
-      {/* <Controls
-        step={step}
-        onIncrement={onIncrement}
-        onDecrement={onDecrement}
-      /> */}
-      <Controls
-        step={step}
-        onIncrement={() => onIncrement(step)}
-        onDecrement={() => onDecrement(step)}
-      />
+      <Controls step={step} onIncrement={increment} onDecrement={decrement} />
     </div>
   );
 }
 
-// ----- Step 3 - Counter
-// const mapStateToProps = state => {
-//   return { value: state.counterValue };
-// };
+export default Counter;
 
-// const mapDispatchToProps = dispatch => {
+// function Counter({ value, step, onIncrement, onDecrement }) {
+//   return (
+//     <div className="Counter">
+//       <Value value={value} />
+//       <Controls
+//         step={step}
+//         onIncrement={() => onIncrement(step)}
+//         onDecrement={() => onDecrement(step)}
+//       />
+//     </div>
+//   );
+// }
+
+// const mapStateToProps = state => {
+//   console.log(state);
 //   return {
-//     onIncrement: value => dispatch(increment(value)),
-//     onDecrement: value => dispatch(decrement(value)),
+//     value: state.counter.value,
+//     step: state.counter.step,
 //   };
 // };
 
-// ----- Step 4 - state is more difficult
-const mapStateToProps = state => ({
-  value: state.counter.value,
-  step: state.counter.step,
-});
+// const mapDispatchToProps = dispatch => ({
+//   onIncrement: value => dispatch(incrementCounter(value)),
+//   onDecrement: value => dispatch(decrementCounter(value)),
+// });
 
-const mapDispatchToProps = dispatch => ({
-  onIncrement: value => dispatch(increment(value)),
-  onDecrement: value => dispatch(decrement(value)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
-
-// Currying (Каррирование) https://javascript.info/currying-partials
-// const a = (x) => (y) => x + y
-// a(2)(3) // return 5
-
-// class Counter extends Component {
-// static defaultProps = {
-//   initialValue: 0,
-// };
-
-// static propTypes = {
-//   //
-// };
-
-// state = {
-//   value: this.props.initialValue,
-// };
-
-// handleIncrement = () => {
-//   this.setState(prevState => ({
-//     value: prevState.value + 1,
-//   }));
-// };
-
-// handleDecrement = () => {
-//   this.setState(prevState => ({
-//     value: prevState.value - 1,
-//   }));
-// };
-
-// render() {
-// const { value } = this.state;
-
-//     return (
-//       <div className="Counter">
-//         <Value value={value} />
-
-//         <Controls
-//           onIncrement={this.handleIncrement}
-//           onDecrement={this.handleDecrement}
-//         />
-//       </div>
-//     );
-//   }
-// }
-
-// export default Counter;
+// export default connect(mapStateToProps, mapDispatchToProps)(Counter);
