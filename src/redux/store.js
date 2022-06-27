@@ -1,6 +1,6 @@
 import {
   configureStore,
-  // getDefaultMiddleware,
+  getDefaultMiddleware,
   // combineReducers,
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
@@ -17,24 +17,44 @@ import {
 import storage from 'redux-persist/lib/storage';
 import counterReducer from './counter/counter-reducer';
 import todosReducer from './todos/todos-reducer';
+import weatherReducer from './weather/weather-reducer';
 
 // in last version toolkit - getDefaultMiddleware - under the hood in configureStore
 // middlewares ORDER is very IMPORTANT!!!
 // console.log(getDefaultMiddleware());
 
-const myMiddleware = getDefaultMiddleware =>
-  getDefaultMiddleware({
+// Construction of middleware
+// const myMiddleware = store => next => action => {}
+// function myMiddleWare (store) {
+//   return function (next) {
+//     return function (action) {
+//       // body
+//     }
+//   }
+// }
+
+const myMiddleware = store => next => action => {
+  console.log('My middleware!');
+  next(action);
+};
+
+// const basicMiddleware = getDefaultMiddleware =>
+//   getDefaultMiddleware({
+//     serializableCheck: {
+//       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//     },
+//   }).concat(logger);
+
+// solution with other writing
+const basicMiddleware = [
+  ...getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }).concat(logger);
-
-// solution with other writing
-// const myMiddleware = [...getDefaultMiddleware({
-//   serializableCheck: {
-//     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//   },
-// }), logger]
+  }),
+  myMiddleware,
+  logger,
+];
 
 const todosPersistConfig = {
   key: 'todos',
@@ -54,9 +74,10 @@ export const store = configureStore({
   reducer: {
     counter: counterReducer,
     todos: persistReducer(todosPersistConfig, todosReducer),
+    weather: weatherReducer,
   },
   // middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
-  middleware: myMiddleware,
+  middleware: basicMiddleware,
   devTools: process.env.NODE_ENV === 'development',
 });
 
