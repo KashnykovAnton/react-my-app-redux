@@ -1,6 +1,6 @@
 import {
   configureStore,
-  getDefaultMiddleware,
+  // getDefaultMiddleware,
   // combineReducers,
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
@@ -38,23 +38,23 @@ const myMiddleware = store => next => action => {
   next(action);
 };
 
-// const basicMiddleware = getDefaultMiddleware =>
-//   getDefaultMiddleware({
-//     serializableCheck: {
-//       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//     },
-//   }).concat(logger);
-
-// solution with other writing
-const basicMiddleware = [
-  ...getDefaultMiddleware({
+const basicMiddleware = getDefaultMiddleware =>
+  getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
-  }),
-  myMiddleware,
-  logger,
-];
+  }).concat(myMiddleware, logger);
+
+// solution with other writing
+// const basicMiddleware = [
+//   ...getDefaultMiddleware({
+//     serializableCheck: {
+//       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//     },
+//   }),
+//   myMiddleware,
+//   logger,
+// ];
 
 const todosPersistConfig = {
   key: 'todos',

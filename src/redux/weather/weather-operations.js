@@ -1,41 +1,30 @@
-// const addTodoOperation = text => {
-//   const todo = fetch('/todos');
-
-//   return dispatch => {
-//     dispatch(addTodo(todo));
-//   };
-// };
-
-// const addTodoOperation = text => {
-//   const todo = fetch('/todos');
-//   dispatch(addTodo(todo));
-// };
-
-import {
-  fetchWeatherRequest,
-  fetchWeatherSuccess,
-  fetchWeatherError,
-} from './weather-actions';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const API_KEY = '4e94c4780f880da37a80d8b8508a2693';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
-
-export const fetchWeather = (longitude, latitude) => async dispatch => {
-  dispatch(fetchWeatherRequest());
-
-  //   const longitude = 21.2564815;
-  //   const latitude = 48.7189942;
-
-  // if don't use async-await
-  // fetch().then().catch()
-
-  try {
-    const response = await fetch(
-      `${BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`,
-    );
-    const data = await response.json();
-    dispatch(fetchWeatherSuccess(data));
-  } catch (error) {
-    dispatch(fetchWeatherError(error));
-  }
+const errorCheck = data => {
+  return (
+    Number(data.cod) === 400 ||
+    Number(data.cod) === 401 ||
+    Number(data.cod) === 404 ||
+    Number(data.cod) === 429
+  );
 };
+
+export const fetchWeather = createAsyncThunk(
+  'weather/fetchWeather',
+  async ({ lat: latitude, lon: longitude }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`,
+      );
+      const data = await response.json();
+      if (errorCheck(data)) {
+        throw new Error(data.message);
+      }
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
