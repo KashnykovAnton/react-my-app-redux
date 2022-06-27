@@ -22,7 +22,8 @@ const Weather = () => {
       return;
     }
 
-    dispatch(fetchWeather(longitude, latitude));
+    // dispatch(fetchWeather(longitude, latitude));
+    dispatch(fetchWeather({ lat: latitude, lon: longitude }));
   }, [coord.length, dispatch, latitude, longitude]);
 
   const isEmpty = Object.keys(data).length === 0;
