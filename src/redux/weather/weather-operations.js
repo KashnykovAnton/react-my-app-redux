@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_KEY = '4e94c4780f880da37a80d8b8508a2693';
+const API_KEY = 'b39ad2fa3a751d1cbe3f46e239e6c6c0';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const errorCheck = data => {
   return (

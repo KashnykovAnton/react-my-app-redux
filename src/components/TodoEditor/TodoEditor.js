@@ -34,7 +34,7 @@ function TodoEditor({ onSave }) {
         onChange={handleChange}
       ></textarea>
       <button type="submit" className="TodoEditor__button">
-        Сохранить
+        Save
       </button>
     </form>
   );
