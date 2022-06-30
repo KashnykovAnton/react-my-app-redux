@@ -3,47 +3,86 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   getLon,
   getLat,
-  getCoord,
   getData,
+  getDataFiveDays,
+  getDataFiveDaysList,
+  getCoordLength,
 } from 'redux/weather/weather-selectors';
 
-import { fetchWeather } from 'redux/weather/weather-operations';
+import {
+  fetchWeather,
+  fetchWeatherForFiveDays,
+} from 'redux/weather/weather-operations';
+import WeatherCard from 'components/WeatherCard/WeatherCard';
 
 const Weather = () => {
   const longitude = useSelector(getLon);
   const latitude = useSelector(getLat);
   const data = useSelector(getData);
-  const coord = useSelector(getCoord);
+  const dataFiveDays = useSelector(getDataFiveDays);
+  const dataFiveDaysList = useSelector(getDataFiveDaysList);
+  const length = useSelector(getCoordLength);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (coord.length !== 2) {
+    if (length !== 2) {
       return;
     }
 
     // dispatch(fetchWeather(longitude, latitude));
     dispatch(fetchWeather({ lat: latitude, lon: longitude }));
-  }, [coord.length, dispatch, latitude, longitude]);
+  }, [length, dispatch, latitude, longitude]);
 
-  const isEmpty = Object.keys(data).length === 0;
+  const onFetchWeatherForFiveDays = () => {
+    dispatch(fetchWeatherForFiveDays({ lat: latitude, lon: longitude }));
+  };
+
+  const isEmptyDataFiveDays = Object.keys(dataFiveDays).length === 0;
+  // const isEmptyDataFiveDays = dataFiveDays.length === 0;
+
+  const isEmptyData = Object.keys(data).length === 0;
+  // const isEmptyData = data.length === 0;
 
   return (
     <>
-      {!isEmpty && (
+      {!isEmptyData && (
         <div>
-          <h2>Weather!</h2>
-          <h3>City: {data.name}</h3>
-          <p>{data.weather[0].description}</p>
-          <ul>
-            <li>temp: {data.main.temp}</li>
-            <li>temp_feels_like: {data.main.feels_like}</li>
-          </ul>
-          <img
-            src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-            alt="weather-icon"
-          />
+          <WeatherCard {...{ data }} />
         </div>
+      )}
+      <button type="button" onClick={onFetchWeatherForFiveDays}>
+        Get weather on 5 days
+      </button>
+      {!isEmptyDataFiveDays && (
+        <>
+          <div style={{ textAlign: 'center' }}>
+            <h2>{dataFiveDays.city.country}</h2>
+            <h2>{dataFiveDays.city.name}</h2>
+          </div>
+          <ul
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              padding: '0',
+            }}
+          >
+            {dataFiveDaysList &&
+              dataFiveDaysList.map(data => {
+                const unixTimestamp = data.dt;
+                const date = new Date(unixTimestamp * 1e3); // 1e3 === 1000
+                const localizedDate = date.toLocaleDateString('en', {
+                  dateStyle: 'medium',
+                });
+                const localizedTime = date.toLocaleTimeString('en', {
+                  timeStyle: 'short',
+                });
+                const weatherDate = { localizedDate, localizedTime };
+                console.log(localizedDate);
+                return <WeatherCard key={data.dt} {...{ data, weatherDate }} />;
+              })}
+          </ul>
+        </>
       )}
     </>
   );
