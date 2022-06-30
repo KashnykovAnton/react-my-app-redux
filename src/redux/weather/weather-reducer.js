@@ -2,11 +2,17 @@
 // import { createReducer } from '@reduxjs/toolkit';
 // import { addLon, addLat } from './weather-actions';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchWeather } from './weather-operations';
+import { fetchWeather, fetchWeatherForFiveDays } from './weather-operations';
 
 const weatherSlice = createSlice({
   name: 'weather',
-  initialState: { coord: [], data: [], isLoading: false, error: null },
+  initialState: {
+    coord: [],
+    data: [],
+    dataFiveDays: [],
+    isLoading: false,
+    error: null,
+  },
   reducers: {
     addLon(state, action) {
       state.coord.push(action.payload);
@@ -30,6 +36,18 @@ const weatherSlice = createSlice({
       state.error = null;
     });
     builder.addCase(fetchWeather.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+    builder.addCase(fetchWeatherForFiveDays.fulfilled, (state, action) => {
+      state.dataFiveDays = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(fetchWeatherForFiveDays.pending, state => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchWeatherForFiveDays.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     });
