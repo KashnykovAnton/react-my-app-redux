@@ -42,6 +42,7 @@ const Weather = () => {
   // const isEmptyDataFiveDays = dataFiveDays.length === 0;
 
   const isEmptyData = Object.keys(data).length === 0;
+  console.log(isEmptyData);
   // const isEmptyData = data.length === 0;
 
   return (

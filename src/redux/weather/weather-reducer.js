@@ -8,7 +8,7 @@ const weatherSlice = createSlice({
   name: 'weather',
   initialState: {
     coord: [],
-    data: [],
+    data: {},
     dataFiveDays: [],
     isLoading: false,
     error: null,
